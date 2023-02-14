@@ -1,41 +1,15 @@
-import re
-import os
-import sys
-import pandas as pd
+from pycodesearch import DirUtils, Search
 
-def search_code(query, folder):
-    results = []
-    for root, dirs, files in os.walk(folder):
-        for filename in files:
-            filepath = os.path.join(root, filename)
-            with open(filepath, encoding="utf8") as f:
-                code = f.read()
-                lines = code.split("\n")
-                for i, line in enumerate(lines):
-                    match = re.search(query, line)
-                    if match:
-                        results.append((filepath, query,i, match.start(), match.end()))
+path = ['C:\\Users\\rdubey5\\Desktop\\Projects\\NBCU\\SearchTool\\Sample_folder','C:\\Users\\rdubey5\\Desktop\\Projects\\Tegna\\ATTRIBUTION\\CRM_MATCHBACK\\CODE\\DAG']
+du = DirUtils()
+paths = du.from_list(path)
+print(paths)
 
-    return sorted(results, key=lambda x: x[1])
+s = Search(paths,['CREATE','import'])
+res = s.search_from_list()
 
-def main():
-    if len(sys.argv) < 3:
-        print("Usage: codesearch [folder_path] [list of words to search for]")
-        sys.exit(1)
-
-    folder_path = sys.argv[1]
-    query = "|".join(sys.argv[2:])
-    results = search_code(query, folder_path)
-    
-    result_list = []
-    for result in results:
-        filepath,word, line_number, start, end = result
-        print(f"{filepath}:{line_number+1}:{start}-{end}")
-        result_list.append([filepath,word,line_number+1,start,end])
-
-    cols = ['Filepath','Word','Line Number','Start Span','End Span']
-    df = pd.DataFrame(result_list,columns=cols)
-    df.to_csv('OUTPUT_LIST.csv',header=True,index=False)
-
-if __name__ =='__main__':
-    main()
+for i in res:
+    for j in i:
+        print(len(j))
+        #for path,word,line,start,end in j:
+        print('Path: --- %s || Word --- %s || Line --- %s || Start --- %s || End --- %s'%(j[0],j[1],j[2],j[3],j[4]))

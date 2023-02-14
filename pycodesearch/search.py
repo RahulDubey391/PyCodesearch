@@ -7,9 +7,10 @@ class Search:
 
     def search_from_list(self):
         results = []
-        for path in self.path_list:
-            for word in self.word_list:
-                results.append(self.search_code(word,path))
+        for folder in self.path_list:
+            for path in folder:
+                for word in self.word_list:
+                    results.append(self.search_code(word,path))
         return results
 
     def search_code(self,query, path):
